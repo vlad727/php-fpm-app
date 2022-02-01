@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpfpm-app
+  labels:
+    app: phpfpm-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpfpm-app
+  template:
+    metadata:
+      labels:
+        app: phpfpm-app
+    spec:
+      containers:
+        - name: nginx
+          image: docker.io/nginx:latest
+          command:
+            - nginx
+            - '-g'
+            - daemon off;
+          ports:
+            - name: nginx
+              containerPort: 80
+              protocol: TCP
+        - name: php-app
+          image: playsportsgroup/php:7.3-fpm-alpine-root
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: php-app-port
+              containerPort: 9000
+          resources: {}
+        - name: phpfpm-exporter
+          image: hipages/php-fpm_exporter
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: php-fpm-exp
+              containerPort: 9253
+          env:
+            - name: PHP_FPM_SCRAPE_URI
+              value: "tcp://localhost:9000/status"
+            - name: PHP_FPM_FIX_PROCESS_COUNT
+              value: "true"
+          resources: {}
+
