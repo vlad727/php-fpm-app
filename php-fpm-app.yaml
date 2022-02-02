@@ -25,14 +25,14 @@ spec:
             - name: nginx
               containerPort: 80
               protocol: TCP
-        - name: php-app
+        - name: php-fpm-app
           image: playsportsgroup/php:7.3-fpm-alpine-root
           imagePullPolicy: IfNotPresent
           ports:
             - name: php-app-port
               containerPort: 9000
           resources: {}
-        - name: phpfpm-exporter
+        - name: php-fpm-exporter
           image: hipages/php-fpm_exporter
           imagePullPolicy: IfNotPresent
           ports:
